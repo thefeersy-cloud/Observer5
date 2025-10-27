@@ -55,22 +55,22 @@
         }
         
         .btn-green {
-            background-color: #16a34a;
+            background-color: #22c55e;
             color: white;
         }
         
         .btn-green:hover {
-            background-color: #15803d;
+            background-color: #16a34a;
             transform: scale(1.05);
         }
         
         .btn-gray {
-            background-color: #1f2937;
+            background-color: #374151;
             color: white;
         }
         
         .btn-gray:hover {
-            background-color: #111827;
+            background-color: #1f2937;
             transform: scale(1.05);
         }
         
@@ -84,24 +84,24 @@
             padding: 16px;
             font-size: 1.25rem;
             background-color: #111827;
-            border: 2px solid #16a34a;
+            border: 2px solid #22c55e;
             color: white;
             border-radius: 12px;
             outline: none;
         }
         
         .input-field:focus {
-            border-color: #16a34a;
-            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.3);
+            border-color: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3);
         }
         
         .response {
             padding: 16px;
             background-color: #111827;
-            border-left: 4px solid #16a34a;
+            border-left: 4px solid #22c55e;
             margin-bottom: 32px;
             font-size: 1.125rem;
-            color: #34d399;
+            color: #6ee7b7;
             opacity: 0;
             animation: fadeIn 1s forwards;
         }
@@ -112,41 +112,57 @@
         }
         
         .progress {
-            color: #6b7280;
+            color: #9ca3af;
             font-size: 0.875rem;
             margin-top: 32px;
         }
         
-        .puzzle-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            max-width: 300px;
+        .puzzle-container {
+            max-width: 400px;
             margin: 0 auto 32px;
+            background-color: #1f2937;
+            padding: 24px;
+            border-radius: 16px;
+            border: 2px solid #22c55e;
         }
         
-        .puzzle-btn {
-            width: 80px;
-            height: 80px;
-            background-color: #1f2937;
-            color: white;
+        .puzzle-equation {
+            font-size: 1.5rem;
             font-weight: bold;
+            margin-bottom: 24px;
+            color: white;
+        }
+        
+        .puzzle-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .puzzle-option {
+            padding: 16px;
+            background-color: #374151;
+            color: white;
             font-size: 1.25rem;
-            border: none;
+            font-weight: bold;
+            border: 2px solid transparent;
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         
-        .puzzle-btn:hover {
-            background-color: #16a34a;
-            transform: scale(1.1);
+        .puzzle-option:hover {
+            background-color: #22c55e;
+            border-color: #16a34a;
+            transform: scale(1.05);
         }
         
         .puzzle-instruction {
             margin-bottom: 24px;
-            color: #9ca3af;
+            color: #d1d5db;
             font-size: 1.125rem;
+            line-height: 1.6;
         }
         
         .error-overlay {
@@ -164,8 +180,8 @@
         }
         
         .error-box {
-            background-color: #064e3b;
-            border: 2px solid #16a34a;
+            background-color: #065f46;
+            border: 2px solid #22c55e;
             padding: 24px;
             border-radius: 12px;
             max-width: 400px;
@@ -174,7 +190,7 @@
         }
         
         .error-title {
-            color: #a7f3d0;
+            color: #bbf7d0;
             font-family: monospace;
             font-size: 1.125rem;
             margin-bottom: 8px;
@@ -188,7 +204,7 @@
         }
         
         .error-code {
-            color: #a7f3d0;
+            color: #bbf7d0;
             font-size: 0.875rem;
         }
         
@@ -206,6 +222,7 @@
         .coordinates-text {
             font-size: 1.5rem;
             margin-bottom: 16px;
+            color: white;
         }
         
         .coordinates-subtext {
@@ -245,10 +262,11 @@
             font-weight: bold;
             margin-bottom: 16px;
             animation: pulse 1s infinite;
+            color: white;
         }
         
         .black-screen-text {
-            color: #6b7280;
+            color: #9ca3af;
         }
         
         @keyframes pulse {
@@ -272,18 +290,18 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(34, 197, 94, 0.1);
-            clip-path: polygon(0% 0%, 100% 20%, 100% 100%, 0% 80%);
+            background-color: rgba(34, 197, 94, 0.15);
+            clip-path: polygon(0% 0%, 100% 25%, 100% 100%, 0% 75%);
         }
         
-        .glitch-blue {
+        .glitch-yellow {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 100, 0, 0.05);
-            clip-path: polygon(0% 20%, 100% 0%, 100% 80%, 0% 100%);
+            background-color: rgba(234, 179, 8, 0.08);
+            clip-path: polygon(0% 25%, 100% 0%, 100% 75%, 0% 100%);
         }
     </style>
 </head>
@@ -319,16 +337,13 @@
         // DOM elements
         const app = document.getElementById('app');
 
-        // New puzzle: Find the pattern in the sequence
-        function generatePuzzle() {
-            // Create a 3x3 grid with numbers following a pattern
-            // The pattern is: each row increases by 3, starting from different bases
-            // Row 1: 2, 5, 8 (starts at 2, +3 each)
-            // Row 2: 4, 7, 10 (starts at 4, +3 each)  
-            // Row 3: 6, 9, 12 (starts at 6, +3 each)
-            // But we'll shuffle and hide the answer 15 somewhere
-            const numbers = [2, 5, 8, 4, 7, 10, 6, 9, 15];
-            return numbers.sort(() => Math.random() - 0.5);
+        // New puzzle: Mathematical equation with multiple choice
+        function getPuzzleData() {
+            return {
+                equation: "8 ÷ 2(2 + 2) = ?",
+                options: [1, 16, 8, 14],
+                correctAnswer: 14
+            };
         }
 
         function triggerGlitchEffect(duration = 3000) {
@@ -340,7 +355,7 @@
             glitchOverlay.id = 'glitch-overlay';
             glitchOverlay.innerHTML = `
                 <div class="glitch-green"></div>
-                <div class="glitch-blue"></div>
+                <div class="glitch-yellow"></div>
             `;
             document.body.appendChild(glitchOverlay);
             
@@ -349,13 +364,13 @@
             const animateGlitch = () => {
                 if (Date.now() - startTime < duration && showGlitchEffect) {
                     const greenElement = glitchOverlay.querySelector('.glitch-green');
-                    const blueElement = glitchOverlay.querySelector('.glitch-blue');
+                    const yellowElement = glitchOverlay.querySelector('.glitch-yellow');
                     
-                    if (greenElement && blueElement) {
+                    if (greenElement && yellowElement) {
                         greenElement.style.clipPath = `polygon(${Math.random() * 100}% 0, 100% ${Math.random() * 50}%, ${Math.random() * 100}% 100%, 0 ${Math.random() * 50}%)`;
-                        blueElement.style.clipPath = `polygon(${Math.random() * 100}% 0, 100% ${Math.random() * 50}%, ${Math.random() * 100}% 100%, 0 ${Math.random() * 50}%)`;
-                        greenElement.style.transform = `translateX(${(Math.random() - 0.5) * 20}px)`;
-                        blueElement.style.transform = `translateY(${(Math.random() - 0.5) * 20}px)`;
+                        yellowElement.style.clipPath = `polygon(${Math.random() * 100}% 0, 100% ${Math.random() * 50}%, ${Math.random() * 100}% 100%, 0 ${Math.random() * 50}%)`;
+                        greenElement.style.transform = `translateX(${(Math.random() - 0.5) * 25}px)`;
+                        yellowElement.style.transform = `translateY(${(Math.random() - 0.5) * 25}px)`;
                     }
                     requestAnimationFrame(animateGlitch);
                 } else {
@@ -410,9 +425,8 @@
             if (currentStep === 1) {
                 let responseMsg = '';
                 if (selectedAnswer === '0') responseMsg = "Ты себя за человека не считаешь?";
-                else if (selectedAnswer === '1') responseMsg = "А сестрёнка...";
-                else if (selectedAnswer === '2') responseMsg = "Ты уверена?";
-                else if (selectedAnswer >= '3') responseMsg = "Ты уже нас заметила?";
+                else if (selectedAnswer === '1') responseMsg = "Ты уверена?";
+                else if (selectedAnswer === '2') responseMsg = "Ты нас заметила?";
                 
                 if (responseMsg) {
                     showResponseMessageTemp(responseMsg);
@@ -485,8 +499,9 @@
             inputValue = e.target.value;
         }
 
-        function handlePuzzleClick(number) {
-            if (number === 15) {
+        function handlePuzzleOptionClick(option) {
+            const puzzleData = getPuzzleData();
+            if (option === puzzleData.correctAnswer) {
                 showAgeMessage = true;
                 render();
                 setTimeout(() => {
@@ -567,17 +582,20 @@
         }
 
         function renderPuzzle() {
-            const puzzleNumbers = generatePuzzle();
-            let puzzleHtml = '';
-            puzzleNumbers.forEach(num => {
-                puzzleHtml += `<button class="puzzle-btn" onclick="handlePuzzleClick(${num})">${num}</button>`;
+            const puzzleData = getPuzzleData();
+            let optionsHtml = '';
+            puzzleData.options.forEach(option => {
+                optionsHtml += `<div class="puzzle-option" onclick="handlePuzzleOptionClick(${option})">${option}</div>`;
             });
             
             return `
-                <div class="question">Найди следующее число в последовательности</div>
-                <div class="puzzle-instruction">2, 5, 8, 4, 7, 10, 6, 9, ?</div>
-                <div class="puzzle-grid">
-                    ${puzzleHtml}
+                <div class="question">Реши головоломку</div>
+                <div class="puzzle-container">
+                    <div class="puzzle-instruction">Выбери правильный ответ:</div>
+                    <div class="puzzle-equation">${puzzleData.equation}</div>
+                    <div class="puzzle-options">
+                        ${optionsHtml}
+                    </div>
                 </div>
             `;
         }
@@ -590,7 +608,7 @@
                 app.innerHTML = `
                     <div class="coordinates">
                         <div class="coordinates-title">Мы рядом</div>
-                        <div class="coordinates-text">59.89137° с.ш., 30.48928° в.д.</div>
+                        <div class="coordinates-text">59.88932° с.ш., 30.4881° в.д.</div>
                         <div class="coordinates-subtext">
                             <p>Геолокация активирована</p>
                             <p>Координаты получены успешно</p>
@@ -604,7 +622,7 @@
                 app.innerHTML = '';
                 const ageMessage = document.createElement('div');
                 ageMessage.className = 'age-message';
-                ageMessage.textContent = 'Верно, столько тебе лет, Маргарита';
+                ageMessage.textContent = 'Верно, столько тебе лет, Алена';
                 document.body.appendChild(ageMessage);
                 return;
             }
@@ -636,10 +654,10 @@
                     left: 50%;
                     transform: translate(-50%, -50%);
                     background-color: #111827;
-                    border-left: 4px solid #16a34a;
+                    border-left: 4px solid #22c55e;
                     padding: 16px 32px;
                     border-radius: 8px;
-                    color: #34d399;
+                    color: #6ee7b7;
                     font-size: 1.125rem;
                     z-index: 1500;
                     animation: fadeIn 1s forwards;
