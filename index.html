@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тайна</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #000;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: all 0.5s ease;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .question {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 32px;
+        }
+        
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+        
+        .btn {
+            padding: 16px 32px;
+            font-size: 1.25rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+        
+        .btn-green {
+            background-color: #22c55e;
+            color: white;
+        }
+        
+        .btn-green:hover {
+            background-color: #16a34a;
+            transform: scale(1.05);
+        }
+        
+        .btn-gray {
+            background-color: #374151;
+            color: white;
+        }
+        
+        .btn-gray:hover {
+            background-color: #1f2937;
+            transform: scale(1.05);
+        }
+        
+        .input-container {
+            max-width: 400px;
+            margin: 0 auto 32px;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.25rem;
+            background-color: #111827;
+            border: 2px solid #22c55e;
+            color: white;
+            border-radius: 12px;
+            outline: none;
+        }
+        
+        .input-field:focus {
+            border-color: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3);
+        }
+        
+        .response {
+            padding: 16px;
+            background-color: #111827;
+            border-left: 4px solid #22c55e;
+            margin-bottom: 32px;
+            font-size: 1.125rem;
+            color: #6ee7b7;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .progress {
+            color: #9ca3af;
+            font-size: 0.875rem;
+            margin-top: 32px;
+        }
+        
+        .puzzle-container {
+            max-width: 400px;
+            margin: 0 auto 32px;
+            background-color: #1f2937;
+            padding: 24px;
+            border-radius: 16px;
+            border: 2px solid #22c55e;
+        }
+        
+        .puzzle-equation {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 24px;
+            color: white;
+        }
+        
+        .puzzle-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .puzzle-option {
+            padding: 16px;
+            background-color: #374151;
+            color: white;
+            font-size: 1.25rem;
+            font-weight: bold;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .puzzle-option:hover {
+            background-color: #22c55e;
+            border-color: #16a34a;
+            transform: scale(1.05);
+        }
+        
+        .puzzle-instruction {
+            margin-bottom: 24px;
+            color: #d1d5db;
+            font-size: 1.125rem;
+            line-height: 1.6;
+        }
+        
+        .error-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: pulse 1s infinite;
+        }
+        
+        .error-box {
+            background-color: #065f46;
+            border: 2px solid #22c55e;
+            padding: 24px;
+            border-radius: 12px;
+            max-width: 400px;
+            margin: 0 20px;
+            text-align: center;
+        }
+        
+        .error-title {
+            color: #bbf7d0;
+            font-family: monospace;
+            font-size: 1.125rem;
+            margin-bottom: 8px;
+        }
+        
+        .error-message {
+            color: white;
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+        
+        .error-code {
+            color: #bbf7d0;
+            font-size: 0.875rem;
+        }
+        
+        .coordinates {
+            text-align: center;
+        }
+        
+        .coordinates-title {
+            color: #22c55e;
+            font-size: 2.25rem;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+        
+        .coordinates-text {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            color: white;
+        }
+        
+        .coordinates-subtext {
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+        
+        .age-message {
+            font-size: 2.25rem;
+            font-weight: bold;
+            color: #22c55e;
+            animation: pulse 1s infinite;
+            text-align: center;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2000;
+        }
+        
+        .black-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .black-screen-timer {
+            font-size: 3.75rem;
+            font-weight: bold;
+            margin-bottom: 16px;
+            animation: pulse 1s infinite;
+            color: white;
+        }
+        
+        .black-screen-text {
+            color: #9ca3af;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .glitch-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 500;
+        }
+        
+        .glitch-green {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(34, 197, 94, 0.15);
+            clip-path: polygon(0% 0%, 100% 25%, 100% 100%, 0% 75%);
+        }
+        
+        .glitch-yellow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(234, 179, 8, 0.08);
+            clip-path: polygon(0% 25%, 100% 0%, 100% 75%, 0% 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app">
+        <!-- Content will be dynamically generated -->
+    </div>
+
+    <script>
+        // State management
+        let currentStep = 0;
+        let selectedAnswer = '';
+        let inputValue = '';
+        let showError = false;
+        let showCoordinates = false;
+        let showBlackScreen = false;
+        let blackScreenTimer = 10;
+        let showGlitchEffect = false;
+        let cameraErrorCount = 0;
+        let showPuzzle = false;
+        let showAgeMessage = false;
+        let showResponseMessage = false;
+        let responseMessageText = '';
+
+        const questions = [
+            "Место на фото тебе знакомо?",
+            "Сколько человек у тебя в комнате?",
+            "Что написано на фото?",
+            "Сколько лиц ты видела?",
+            "Ты чувствуешь себя в безопасности?"
+        ];
+
+        // DOM elements
+        const app = document.getElementById('app');
+
+        // New puzzle: Mathematical equation with multiple choice
+        function getPuzzleData() {
+            return {
+                equation: "8 ÷ 2(2 + 2) = ?",
+                options: [1, 16, 8, 14],
+                correctAnswer: 14
+            };
+        }
+
+        function triggerGlitchEffect(duration = 3000) {
+            showGlitchEffect = true;
+            
+            // Create glitch overlay
+            const glitchOverlay = document.createElement('div');
+            glitchOverlay.className = 'glitch-overlay';
+            glitchOverlay.id = 'glitch-overlay';
+            glitchOverlay.innerHTML = `
+                <div class="glitch-green"></div>
+                <div class="glitch-yellow"></div>
+            `;
+            document.body.appendChild(glitchOverlay);
+            
+            // Animate glitch effect
+            const startTime = Date.now();
+            const animateGlitch = () => {
+                if (Date.now() - startTime < duration && showGlitchEffect) {
+                    const greenElement = glitchOverlay.querySelector('.glitch-green');
+                    const yellowElement = glitchOverlay.querySelector('.glitch-yellow');
+                    
+                    if (greenElement && yellowElement) {
+                        greenElement.style.clipPath = `polygon(${Math.random() * 100}% 0, 100% ${Math.random() * 50}%, ${Math.random() * 100}% 100%, 0 ${Math.random() * 50}%)`;
+                        yellowElement.style.clipPath = `polygon(${Math.random() * 100}% 0, 100% ${Math.random() * 50}%, ${Math.random() * 100}% 100%, 0 ${Math.random() * 50}%)`;
+                        greenElement.style.transform = `translateX(${(Math.random() - 0.5) * 25}px)`;
+                        yellowElement.style.transform = `translateY(${(Math.random() - 0.5) * 25}px)`;
+                    }
+                    requestAnimationFrame(animateGlitch);
+                } else {
+                    showGlitchEffect = false;
+                    if (glitchOverlay.parentNode) {
+                        glitchOverlay.parentNode.removeChild(glitchOverlay);
+                    }
+                }
+            };
+            
+            animateGlitch();
+        }
+
+        function showCameraError() {
+            if (cameraErrorCount < 1) {
+                showError = true;
+                cameraErrorCount++;
+                render();
+                setTimeout(() => {
+                    showError = false;
+                    render();
+                }, 3000);
+            }
+        }
+
+        function showResponseMessageTemp(message) {
+            showResponseMessage = true;
+            responseMessageText = message;
+            render();
+            setTimeout(() => {
+                showResponseMessage = false;
+                responseMessageText = '';
+                render();
+            }, 3000);
+        }
+
+        function handleAnswer(answer) {
+            if (currentStep === 0 && answer === 'нет') {
+                showError = true;
+                render();
+                setTimeout(() => {
+                    showError = false;
+                    render();
+                }, 2000);
+                return;
+            }
+
+            selectedAnswer = answer;
+            triggerGlitchEffect(2000);
+            
+            // Show response message for all steps except puzzle and final
+            if (currentStep === 1) {
+                let responseMsg = '';
+                if (selectedAnswer === '0') responseMsg = "Ты себя за человека не считаешь?";
+                else if (selectedAnswer === '1') responseMsg = "Ты уверена?";
+                else if (selectedAnswer === '2') responseMsg = "Ты нас заметила?";
+                
+                if (responseMsg) {
+                    showResponseMessageTemp(responseMsg);
+                }
+            } else if (currentStep === 3) {
+                let responseMsg = '';
+                if (selectedAnswer === '1') responseMsg = "Да, и оно твоё";
+                else if (selectedAnswer === '2') responseMsg = "Да, и второе моё";
+                
+                if (responseMsg) {
+                    showResponseMessageTemp(responseMsg);
+                }
+            }
+            
+            if (currentStep === 0) {
+                setTimeout(() => {
+                    currentStep = 1;
+                    selectedAnswer = '';
+                    inputValue = '';
+                    render();
+                }, 3000);
+            } else if (currentStep === 1) {
+                setTimeout(() => {
+                    showPuzzle = true;
+                    render();
+                }, 1000);
+            } else if (currentStep === 2) {
+                if (answer.toLowerCase() !== 'глаз') {
+                    showError = true;
+                    render();
+                    setTimeout(() => {
+                        showError = false;
+                        render();
+                    }, 2000);
+                    return;
+                }
+                showCameraError();
+                setTimeout(() => {
+                    showBlackScreen = true;
+                    blackScreenTimer = 10;
+                    render();
+                    const timer = setInterval(() => {
+                        blackScreenTimer--;
+                        if (blackScreenTimer <= 0) {
+                            clearInterval(timer);
+                            showBlackScreen = false;
+                            currentStep = 3;
+                            selectedAnswer = '';
+                            inputValue = '';
+                            render();
+                        } else {
+                            render();
+                        }
+                    }, 1000);
+                }, 2000);
+            } else if (currentStep === 3) {
+                setTimeout(() => {
+                    currentStep = 4;
+                    selectedAnswer = '';
+                    inputValue = '';
+                    render();
+                }, 3000);
+            } else if (currentStep === 4) {
+                showCoordinates = true;
+                render();
+            }
+        }
+
+        function handleInputChange(e) {
+            inputValue = e.target.value;
+        }
+
+        function handlePuzzleOptionClick(option) {
+            const puzzleData = getPuzzleData();
+            if (option === puzzleData.correctAnswer) {
+                showAgeMessage = true;
+                render();
+                setTimeout(() => {
+                    showAgeMessage = false;
+                    showPuzzle = false;
+                    currentStep = 2;
+                    selectedAnswer = '';
+                    inputValue = '';
+                    render();
+                }, 3000);
+            }
+        }
+
+        function getRandomFakeError() {
+            const fakeErrors = [
+                "Ошибка подключения к серверу...",
+                "Система временно недоступна",
+                "Произошла критическая ошибка",
+                "Повторите попытку позже",
+                "Нарушение протокола безопасности"
+            ];
+            return fakeErrors[Math.floor(Math.random() * fakeErrors.length)];
+        }
+
+        // Render functions
+        function renderQuestion() {
+            let html = '';
+            switch (currentStep) {
+                case 0:
+                    html = `
+                        <div class="question">${questions[currentStep]}</div>
+                        <div class="buttons">
+                            <button class="btn btn-green" onclick="handleAnswer('да')">Да</button>
+                            <button class="btn btn-gray" onclick="handleAnswer('нет')">Нет</button>
+                        </div>
+                    `;
+                    break;
+                case 1:
+                    html = `
+                        <div class="question">${questions[currentStep]}</div>
+                        <div class="buttons">
+                            <button class="btn btn-green" onclick="handleAnswer('0')">0</button>
+                            <button class="btn btn-green" onclick="handleAnswer('1')">1</button>
+                            <button class="btn btn-green" onclick="handleAnswer('2')">2</button>
+                            <button class="btn btn-green" onclick="handleAnswer('3')">3+</button>
+                        </div>
+                    `;
+                    break;
+                case 2:
+                    html = `
+                        <div class="question">${questions[currentStep]}</div>
+                        <div class="input-container">
+                            <input type="text" class="input-field" value="${inputValue}" oninput="handleInputChange(event)" placeholder="Введите ответ..." onkeypress="if(event.key==='Enter') handleAnswer(inputValue)">
+                            <button class="btn btn-green" style="margin-top: 16px; width: 100%;" onclick="handleAnswer(inputValue)">Ответить</button>
+                        </div>
+                    `;
+                    break;
+                case 3:
+                    html = `
+                        <div class="question">${questions[currentStep]}</div>
+                        <div class="buttons">
+                            <button class="btn btn-green" onclick="handleAnswer('1')">1</button>
+                            <button class="btn btn-green" onclick="handleAnswer('2')">2</button>
+                        </div>
+                    `;
+                    break;
+                case 4:
+                    html = `
+                        <div class="question">${questions[currentStep]}</div>
+                        <div class="buttons">
+                            <button class="btn btn-green" onclick="handleAnswer('да')">Да</button>
+                            <button class="btn btn-gray" onclick="handleAnswer('нет')">Нет</button>
+                        </div>
+                    `;
+                    break;
+            }
+            return html;
+        }
+
+        function renderPuzzle() {
+            const puzzleData = getPuzzleData();
+            let optionsHtml = '';
+            puzzleData.options.forEach(option => {
+                optionsHtml += `<div class="puzzle-option" onclick="handlePuzzleOptionClick(${option})">${option}</div>`;
+            });
+            
+            return `
+                <div class="question">Реши головоломку</div>
+                <div class="puzzle-container">
+                    <div class="puzzle-instruction">Выбери правильный ответ:</div>
+                    <div class="puzzle-equation">${puzzleData.equation}</div>
+                    <div class="puzzle-options">
+                        ${optionsHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function render() {
+            // Clear any existing overlays first
+            document.querySelectorAll('.error-overlay, .age-message, .black-screen, .response-overlay').forEach(el => el.remove());
+            
+            if (showCoordinates) {
+                app.innerHTML = `
+                    <div class="coordinates">
+                        <div class="coordinates-title">Мы рядом</div>
+                        <div class="coordinates-text">59.88932° с.ш., 30.4881° в.д.</div>
+                        <div class="coordinates-subtext">
+                            <p>Геолокация активирована</p>
+                            <p>Координаты получены успешно</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            if (showAgeMessage) {
+                app.innerHTML = '';
+                const ageMessage = document.createElement('div');
+                ageMessage.className = 'age-message';
+                ageMessage.textContent = 'Верно, столько тебе лет, Алена';
+                document.body.appendChild(ageMessage);
+                return;
+            }
+
+            if (showPuzzle) {
+                app.innerHTML = renderPuzzle();
+                return;
+            }
+
+            if (showBlackScreen) {
+                app.innerHTML = '';
+                const blackScreen = document.createElement('div');
+                blackScreen.className = 'black-screen';
+                blackScreen.innerHTML = `
+                    <div class="black-screen-timer">${blackScreenTimer}</div>
+                    <div class="black-screen-text">Подождите...</div>
+                `;
+                document.body.appendChild(blackScreen);
+                return;
+            }
+
+            if (showResponseMessage) {
+                app.innerHTML = '';
+                const responseOverlay = document.createElement('div');
+                responseOverlay.className = 'response-overlay';
+                responseOverlay.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background-color: #111827;
+                    border-left: 4px solid #22c55e;
+                    padding: 16px 32px;
+                    border-radius: 8px;
+                    color: #6ee7b7;
+                    font-size: 1.125rem;
+                    z-index: 1500;
+                    animation: fadeIn 1s forwards;
+                `;
+                responseOverlay.textContent = responseMessageText;
+                document.body.appendChild(responseOverlay);
+                return;
+            }
+
+            let content = '';
+            content += renderQuestion();
+            content += `<div class="progress">Шаг ${currentStep + 1} из ${questions.length}</div>`;
+            
+            app.innerHTML = content;
+
+            // Add error overlay if needed
+            if (showError) {
+                const errorOverlay = document.createElement('div');
+                errorOverlay.className = 'error-overlay';
+                const cameraError = "Не удалось получить доступ к камере";
+                const isCameraError = cameraErrorCount > 0;
+                const errorMessage = isCameraError ? cameraError : getRandomFakeError();
+                const errorTitle = isCameraError ? "КАМЕРА" : "SYSTEM ERROR";
+                const errorCode = isCameraError ? "" : `<div class="error-code">Код ошибки: ${Math.floor(Math.random() * 9999)}</div>`;
+                
+                errorOverlay.innerHTML = `
+                    <div class="error-box">
+                        <div class="error-title">${errorTitle}</div>
+                        <div class="error-message">${errorMessage}</div>
+                        ${errorCode}
+                    </div>
+                `;
+                document.body.appendChild(errorOverlay);
+            }
+        }
+
+        // Initialize
+        render();
+
+        // Occasionally show fake errors
+        setInterval(() => {
+            if (Math.random() > 0.8 && !showError && !showBlackScreen && !showGlitchEffect && !showPuzzle && !showAgeMessage && !showResponseMessage) {
+                showError = true;
+                render();
+                setTimeout(() => {
+                    showError = false;
+                    render();
+                }, 1500);
+            }
+        }, 10000);
+    </script>
+</body>
+</html>
+
